@@ -45,7 +45,7 @@ class ImageDirectoryDataset(ImageDataset):
         for index in range(len(self)):
             image = self[index].cuda().unsqueeze(0)
             predicted = model(image).squeeze(0)
-            predicted = predicted[0].cpu().detach()
+            predicted = predicted.cpu().detach()
             predicted = transform(predicted)
 
             name, _ = parse(self.get_image_subpath(index))
