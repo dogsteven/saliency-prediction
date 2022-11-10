@@ -20,7 +20,7 @@ class ImageDataset(Dataset):
 class ImageDirectoryDataset(ImageDataset):
     def __init__(self, directory, transform, mode: str = "RGB"):
         super().__init__(transform, mode)
-        self.directory = directory
+        self.directory = directory 
 
     def get_image_subpath(self, index: int) -> str:
         pass
