@@ -1,5 +1,6 @@
 import os
 from .saliency_map_dataset import SaliencyMapDirectoryDataset
+from .image_dataset import ImageDirectoryDataset
 
 __all__ = ["SALICONSaliencyMapDataset"]
 
@@ -21,3 +22,12 @@ class SALICONSaliencyMapDataset(SaliencyMapDirectoryDataset):
 
     def get_ground_truth_subpath(self, index: int) -> str:
         return self.ground_truth_subpaths[index]
+
+class SALICONTestImageDataset(ImageDirectoryDataset):
+    def __init__(self, directory, transform, mode: str = "RGB"):
+        super().__init__(directory, transform, mode)
+
+        self.image_subpaths = sorted([path for path in os.listdir(self.directory) if is_image_path(path)])
+
+    def get_image_subpath(self, index: int) -> str:
+        return self.image_subpaths[index]
