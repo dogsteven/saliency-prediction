@@ -11,7 +11,7 @@ class SALICONSaliencyMapDataset(SaliencyMapDirectoryDataset):
         super().__init__(image_directory, ground_truth_directory, image_transform, ground_truth_transform)
 
         self.image_subpaths = sorted([path for path in os.listdir(self.image_directory) if is_image_path(path)])
-        self.ground_truth_subpaths = sorted([path for path in os.listdir(self.ground_truth_subpaths) if is_image_path(path)])
+        self.ground_truth_subpaths = sorted([path for path in os.listdir(self.ground_truth_directory) if is_image_path(path)])
 
     def __len__(self):
         return len(self.image_subpaths)
