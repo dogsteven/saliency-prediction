@@ -16,9 +16,10 @@ class ImageNetNormalize(Module):
         return self.normalize(x)
 
 class PaddingByRatio(Module):
-    def __init__(self, ratio: float):
+    def __init__(self, ratio: float, value: float):
         super().__init__()
         self.ratio = ratio
+        self.value = value
 
     def forward(self, x):
         _, h, w = x.shape
@@ -26,4 +27,4 @@ class PaddingByRatio(Module):
         pad_h = expt_h - h
         pad_w = expt_w - w
 
-        return pad(x, (pad_w // 2, pad_w // 2, pad_h // 2, pad_h // 2), "constant", 0.5)
+        return pad(x, (pad_w // 2, pad_w // 2, pad_h // 2, pad_h // 2), "constant", self.value)
