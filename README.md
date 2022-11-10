@@ -13,7 +13,7 @@ Another way is to implement `SaliencyMapDirectoryDataset`: Assume that the image
 4. The method `get_image_subpath(self, index: int) -> str` returns the subpath of the `index`-th image of the dataset with respect to `image_directory` directory.
 5. The method `get_ground_truth_subpath(self, index: int) -> str` returns the subpath of the `index`-th ground truth of the dataset with respect to `ground_truth_directory` directory.
 
-For sample implementations, please check `dataset.cat2000` and `dataset.salicon` modules.
+For detailed implementations, please check `dataset.cat2000` and `dataset.salicon` modules.
 
 ## Measurement
 
