@@ -58,6 +58,99 @@ The `training` module provides a `train` function for training a `Pytorch Lightn
 6. The `batch_size` parameter requires the batch size.
 7. The `max_epochs` parameter requires the maximum epochs of the training step.
 
+```python
+from torch.nn import Module
+from torch.optim import Adam
+from torch.optim.lr_scheduler import MultiplicativeLR
+from pytorch_lightning import LightningModule
+from torchvision.transforms import ToTensor, Compose, Resize
+from dataset.salicon import SALICONSaliencyMapDataset
+from models.transalnet.model import TranSalNet
+from training import train
+from image_preprocessing import ImageNetNormalize
+
+image_transform = Compose([
+    ToTensor(),
+    Resize((288, 384)),
+    ImageNetNormalize()
+])
+
+ground_truth_transform = Compose([
+    ToTensor(),
+    Resize((288, 384))
+])
+
+train_dataset = SALICONSaliencyMapDataset(
+    image_directory = "./salicon/images/train",
+    ground_truth_directory = "./salicon/maps/train",
+    image_transform = image_transform,
+    ground_truth_transform = ground_truth_transform
+)
+
+val_dataset = SALICONSaliencyMapDataset(
+    image_directory = "./salicon/images/val",
+    ground_truth_directory = "./salicon/maps/val",
+    image_transform = image_transform,
+    ground_truth_transform = ground_truth_transform
+)
+
+class TranSalNetLoss(Module):
+    def __init__(self):
+        super().__init__()
+        from measure.transforms import *
+        from measure.measures import *
+        
+        component = ChainTransform([
+            BatchFlatten(),
+            NormalizeToProbabilitic()
+        ])
+        
+        self.transform = ComponentWiseTransform(component)
+        self.kld = KLDivergence()
+        self.sim = Similarity()
+        self.pcc = CorrelationCoefficient()
+
+    def forward(self, pred, y):
+        pred, y = self.transform(pred, y)
+        return 10.0 * self.kld(pred, y) - self.sim(pred, y) - self.pcc(pred, y)
+
+class LightningWrapper(LightningModule):
+    def __init__(self, model, loss_fn):
+        super().__init__()
+        self.model = model
+        self.loss_fn = loss_fn
+    
+    def forward(self, x):
+        return self.model(x)
+    
+    def training_step(self, batch, batch_index):
+        x, y = batch
+        pred = self.model(x)
+        loss = self.loss_fn(pred, y)
+        self.log("train_loss", loss)
+        return loss
+    
+    def validation_step(self, batch, batch_index):
+        x, y = batch
+        pred = self.model(x)
+        loss = self.loss_fn(pred, y)
+        self.log("val_loss", loss, sync_dist = True)
+    
+    def configure_optimizers(self):
+        optimizer = Adam(self.parameters(), lr = 1e-4)
+        lr_scheduler = {
+            "scheduler": MultiplicativeLR(optimizer, lambda epoch: 0.1 if epoch % 3 == 0 else 1.0),
+            "name": "transalnet-lr-scheduler"
+        }
+        return [optimizer], [lr_scheduler]
+
+model = TranSalNet()
+loss_fn = TranSalNetLoss()
+wrapper = LightningWrapper(model, loss_fn)
+
+train(wrapper, "transalnet", train_dataset, val_dataset, gpus = 2, batch_size = 8, max_epochs = 30)
+```
+
 ## Models
 
 The `models` module provides some saliency models, including `TranSalNet-Dense` and `MSINet`.
