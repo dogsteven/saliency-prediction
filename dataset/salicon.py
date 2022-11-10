@@ -29,5 +29,8 @@ class SALICONTestImageDataset(ImageDirectoryDataset):
 
         self.image_subpaths = sorted([path for path in os.listdir(self.directory) if is_image_path(path)])
 
+    def __len__(self):
+        return len(self.image_subpaths)
+
     def get_image_subpath(self, index: int) -> str:
         return self.image_subpaths[index]
