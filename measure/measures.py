@@ -1,7 +1,7 @@
 from torch import log, sum, mean, min, sqrt
 from torch.nn import Module
 
-__all__ = ["KLDivergence", "Similarity", "CorrelationCoefficient"]
+__all__ = ["KLDivergence", "Similarity", "CorrelationCoefficient", "PointWiseBinaryCrossEntropy"]
 
 class KLDivergence(Module):
     def __init__(self, eps = 1e-10):
