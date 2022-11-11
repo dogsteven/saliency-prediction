@@ -20,6 +20,8 @@ class ConditionalGAN(LightningModule):
         g_optimizer, d_optimizer = self.optimizers()
 
         x, y = batch
+        x = x.cuda()
+        y = y.cuda()
         pred = self.generator(x)
         batch_size = x.shape[0]
 
