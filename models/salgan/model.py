@@ -8,4 +8,4 @@ class SalGAN(ConditionalGAN):
         g_optimizer = Adagrad(self.generator.parameters(), lr = 3e-10, weight_decay = 1e-4)
         d_optimizer = Adagrad(self.discriminator.parameters(), lr = 3e-10, weight_decay = 1e-4)
 
-        return g_optimizer, d_optimizer
+        return [d_optimizer, g_optimizer], []
