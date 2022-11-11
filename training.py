@@ -50,7 +50,7 @@ def train_cgan(model: LightningModule, name: str, dataset: Dataset, gpus: int = 
         trainer = Trainer(
             accelerator = "gpu",
             devices = 1,
-            callacks = callbacks,
+            callbacks = callbacks,
             max_epochs = max_epochs
         )
 
