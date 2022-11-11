@@ -28,26 +28,13 @@ class ConditionalGAN(LightningModule):
 
             d_loss = self.d_loss_fn(true_label, ones_label) + self.d_loss_fn(fake_label, zeros_label)
 
-            return {
-                "loss": d_loss,
-                "progress_bar": {
-                    "d_loss": d_loss
-                },
-                "log": {
-                    "d_loss": d_loss
-                }
-            }
+            self.log("d_loss", d_loss)
+            return d_loss
         elif optimizer_idx == 1:
             fake_label = self.discriminator(x, pred)
             ones_label = ones((batch_size, 1)).cuda()
 
             g_loss = self.g_loss_fn(pred, y) + self.d_loss_fn(fake_label, ones_label)
-            return {
-                "loss": g_loss,
-                "progress_bar": {
-                    "g_loss": g_loss
-                },
-                "log": {
-                    "g_loss": g_loss
-                }
-            }
+
+            self.log("g_loss", g_loss)
+            return g_loss
