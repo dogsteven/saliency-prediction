@@ -40,11 +40,17 @@ def train_cgan(model: LightningModule, name: str, dataset: Dataset, gpus: int = 
     if gpus < 1:
         return
 
+    callbacks = [
+        EarlyStopping(monitor = "g_loss"),
+        ModelCheckpoint(dirpath = "./", filename = f"{name}-checkpoint.model", monitor = "g_loss")
+    ]
+
     if gpus == 1:
         dataloader = DataLoader(dataset, batch_size = batch_size, pin_memory = True, shuffle = True)
         trainer = Trainer(
             accelerator = "gpu",
             devices = 1,
+            callacks = callbacks,
             max_epochs = max_epochs
         )
 
@@ -55,6 +61,7 @@ def train_cgan(model: LightningModule, name: str, dataset: Dataset, gpus: int = 
             accelerator = "gpu",
             devices = gpus,
             strategy = "ddp_fork",
+            callbacks = callbacks,
             max_epochs = max_epochs
         )
 
