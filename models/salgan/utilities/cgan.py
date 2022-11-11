@@ -49,4 +49,8 @@ class ConditionalGAN(LightningModule):
         self.manual_backward(g_loss)
         g_optimizer.step()
 
-        self.log_dict({"g_loss": g_loss, "d_loss": d_loss}, prog_bar = True)
+        ####################
+        ## log the losses ##
+        ####################
+
+        self.log_dict({"g_loss": g_loss, "d_loss": d_loss}, prog_bar = True, sync_dist = True)

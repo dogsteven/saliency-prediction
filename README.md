@@ -153,4 +153,4 @@ train(wrapper, "transalnet", train_dataset, val_dataset, gpus = 2, batch_size = 
 
 ## Models
 
-The `models` module provides some saliency models, including `TranSalNet-Dense` and `MSINet`.
+The `models` module provides some saliency models, including `TranSalNet-Dense`, `MSINet`, `CASNet` and `SalGAN`.
