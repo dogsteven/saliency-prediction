@@ -14,12 +14,12 @@ class ConditionalGAN(LightningModule):
     def forward(self, x):
         return self.generator(x)
 
-    def training_step(self, batch, batch_index, optimizer_index):
+    def training_step(self, batch, batch_idx, optimizer_idx):
         x, y = batch
         pred = self.generator(x)
         batch_size = x.shape[0]
 
-        if optimizer_index == 0:
+        if optimizer_idx == 0:
             true_label = self.discriminator(x, y)
             fake_label = self.discriminator(x, pred)
 
@@ -37,7 +37,7 @@ class ConditionalGAN(LightningModule):
                     "d_loss": d_loss
                 }
             }
-        elif optimizer_index == 1:
+        elif optimizer_idx == 1:
             fake_label = self.discriminator(x, pred)
             ones_label = ones((batch_size, 1)).cuda()
 
