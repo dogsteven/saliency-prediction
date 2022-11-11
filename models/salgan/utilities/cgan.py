@@ -49,6 +49,7 @@ class ConditionalGAN(LightningModule):
         self.manual_backward(g_loss)
         g_optimizer.step()
 
+
         ####################
         ## log the losses ##
         ####################
