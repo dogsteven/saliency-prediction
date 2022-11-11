@@ -1,9 +1,9 @@
 from torch import cat, ones, zeros
 from pytorch_lightning import LightningModule
 
-__all__ = ["DCGAN"]
+__all__ = ["ConditionalGAN"]
 
-class DCGAN(LightningModule):
+class ConditionalGAN(LightningModule):
     def __init__(self, generator, discriminator, g_loss_fn, d_loss_fn):
         super().__init__()
         self.generator = generator
@@ -21,14 +21,13 @@ class DCGAN(LightningModule):
 
         x, y = batch
         pred = self.generator(x)
-
         batch_size = x.shape[0]
 
         ############################
         ## optimize discriminator ##
         ############################
-        real_label = self.discriminator(cat([x, y], dim = 1))
-        fake_label = self.discriminator(cat([x, pred], dim = 1))
+        real_label = self.discriminator(x, y)
+        fake_label = self.discriminator(x, pred)
 
         ones_label = ones((batch_size, 1))
         zeros_label = zeros((batch_size, 1))
@@ -42,7 +41,7 @@ class DCGAN(LightningModule):
         ########################
         ## optimize generator ##
         ########################
-        label = self.discriminator(cat([x, pred], dim = 1))
+        label = self.discriminator(x, pred)
 
         g_loss = self.g_loss_fn(pred, y) + self.d_loss_fn(label, ones_label)
 

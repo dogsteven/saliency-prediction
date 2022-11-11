@@ -1,3 +1,4 @@
+from torch import cat
 from torch.nn import Module, Tanh, Sigmoid, MaxPool2d, Linear, Sequential
 from .utilities.convolution_relu import Conv2dReLU
 
@@ -24,5 +25,5 @@ class Discriminator(Module):
             Sigmoid()
         )
 
-    def forward(self, x):
-        return self.network(x)
+    def forward(self, x, y):
+        return self.network(cat([x, y], dim = 1))

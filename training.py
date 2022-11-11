@@ -2,7 +2,7 @@ from torch.utils.data import Dataset, DataLoader
 from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
-__all__ = ["train"]
+__all__ = ["train", "train_cgan"]
 
 def train(model: LightningModule, name: str, train_dataset: Dataset, val_dataset: Dataset, gpus: int = 2, batch_size: int = 32, max_epochs: int = 100):
     if gpus < 1:
@@ -35,3 +35,27 @@ def train(model: LightningModule, name: str, train_dataset: Dataset, val_dataset
         )
 
         trainer.fit(model, train_dataloader, val_dataloader)
+
+def train_cgan(model: LightningModule, name: str, dataset: Dataset, gpus: int = 2, batch_size: int = 32, max_epochs: int = 100):
+    if gpus < 1:
+        return
+
+    if gpus == 1:
+        dataloader = DataLoader(dataset, batch_size = batch_size, pin_memory = True, shuffle = True)
+        trainer = Trainer(
+            accelerator = "gpu",
+            devices = 1,
+            max_epochs = max_epochs
+        )
+
+        trainer.fit(model, dataloader)
+    else:
+        dataloader = DataLoader(dataset, batch_size = batch_size, pin_memory = True, shuffle = True, num_workers = gpus)
+        trainer = Trainer(
+            accelerator = "gpu",
+            devices = gpus,
+            strategy = "ddp_fork",
+            max_epochs = max_epochs
+        )
+
+        trainer.fit(model, dataloader)
