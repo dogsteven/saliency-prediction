@@ -1,5 +1,5 @@
 from torch import cat
-from torch.nn import Module, Tanh, Sigmoid, MaxPool2d, Linear, Sequential
+from torch.nn import Module, Tanh, Sigmoid, MaxPool2d, Linear, Sequential, Flatten
 from .utilities.convolution_relu import Conv2dReLU
 
 __all__ = ["Discriminator"]
@@ -17,6 +17,7 @@ class Discriminator(Module):
             Conv2dReLU(in_channels = 64, out_channels = 64, kernel_size = 3, stride = 1, padding = 1),
             Conv2dReLU(in_channels = 64, out_channels = 64, kernel_size = 3, stride = 1, padding = 1),
             MaxPool2d(kernel_size = 2, stride = 2),
+            Flatten(),
             Linear(in_features = 24 * 32 * 64, out_features = 100),
             Tanh(),
             Linear(in_features = 100, out_features = 2),
