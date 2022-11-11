@@ -4,7 +4,6 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 
 __all__ = ["train"]
 
-
 def train(model: LightningModule, name: str, train_dataset: Dataset, val_dataset: Dataset, gpus: int = 2, batch_size: int = 32, max_epochs: int = 100):
     if gpus < 1:
         return
