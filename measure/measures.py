@@ -33,3 +33,10 @@ class CorrelationCoefficient(Module):
         cc = cov / (pred_var * y_var)
         cc = mean(cc)
         return cc
+
+class PointWiseBinaryCrossEntropy(Module):
+    def forward(self, pred, y):
+        loss = y * log(pred) + (1.0 - y) * log(1.0 - pred)
+        loss = sum(loss, 1)
+        loss = mean(loss)
+        return loss
