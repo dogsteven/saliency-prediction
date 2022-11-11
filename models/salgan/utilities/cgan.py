@@ -20,8 +20,6 @@ class ConditionalGAN(LightningModule):
         g_optimizer, d_optimizer = self.optimizers()
 
         x, y = batch
-        x = x.cuda()
-        y = y.cuda()
         pred = self.generator(x)
         batch_size = x.shape[0]
 
@@ -31,8 +29,8 @@ class ConditionalGAN(LightningModule):
         real_label = self.discriminator(x, y)
         fake_label = self.discriminator(x, pred)
 
-        ones_label = ones((batch_size, 1))
-        zeros_label = zeros((batch_size, 1))
+        ones_label = ones((batch_size, 1)).cuda()
+        zeros_label = zeros((batch_size, 1)).cuda()
 
         d_loss = self.d_loss_fn(real_label, ones_label) + self.d_loss_fn(fake_label, zeros_label)
 
