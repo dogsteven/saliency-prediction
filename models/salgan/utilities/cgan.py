@@ -28,7 +28,7 @@ class ConditionalGAN(LightningModule):
 
             d_loss = self.d_loss_fn(true_label, ones_label) + self.d_loss_fn(fake_label, zeros_label)
 
-            self.log("d_loss", d_loss)
+            self.log_dict({"d_loss": d_loss}, prog_bar = True)
             return d_loss
         elif optimizer_idx == 1:
             fake_label = self.discriminator(x, pred)
@@ -36,5 +36,5 @@ class ConditionalGAN(LightningModule):
 
             g_loss = self.g_loss_fn(pred, y) + self.d_loss_fn(fake_label, ones_label)
 
-            self.log("g_loss", g_loss)
+            self.log_dict({"g_loss": g_loss}, prog_bar = True)
             return g_loss
