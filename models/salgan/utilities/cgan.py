@@ -18,41 +18,44 @@ class ConditionalGAN(LightningModule):
         return self.generator(x)
 
     def training_step(self, batch, batch_idx):
-        g_optimizer, d_optimizer = self.optimizers()
-        g_optimizer: Optimizer
-        d_optimizer: Optimizer
-
         x, y = batch
-        pred = self.generator(x).detach()
+        pred = self.generator(x)
         batch_size = x.shape[0]
 
-        ############################
-        ## optimize discriminator ##
-        ############################
+        if batch_idx % 2 == 0:
+            ############################
+            ## optimize discriminator ##
+            ############################
+            d_optimizer: Optimizer = self.optimizers()[1]
 
-        real_label = self.discriminator(x, y)
-        fake_label = self.discriminator(x, pred)
+            real_label = self.discriminator(x, y)
+            fake_label = self.discriminator(x, pred)
 
-        ones_label = ones((batch_size, 1)).cuda()
-        zeros_label = zeros((batch_size, 1)).cuda()
+            ones_label = ones((batch_size, 1)).cuda()
+            zeros_label = zeros((batch_size, 1)).cuda()
 
-        d_loss = self.d_loss_fn(real_label, ones_label) + self.d_loss_fn(fake_label, zeros_label)
+            d_loss = self.d_loss_fn(real_label, ones_label) + self.d_loss_fn(fake_label, zeros_label)
 
-        d_optimizer.zero_grad()
-        self.manual_backward(d_loss)
-        d_optimizer.step()
+            d_optimizer.zero_grad()
+            self.manual_backward(d_loss)
+            d_optimizer.step()
 
-        ########################
-        ## optimize generator ##
-        ########################
+            self.log_dict({"d_loss": d_loss}, prog_bar = True)
+        else:
+            ########################
+            ## optimize generator ##
+            ########################
+            g_optimizer: Optimizer = self.optimizers()[0]
 
-        fake_label = self.discriminator(x, pred)
+            fake_label = self.discriminator(x, pred)
 
-        g_loss = self.g_loss_fn(pred, y)
-        adv_loss = g_loss + self.d_loss_fn(fake_label, ones_label)
+            ones_label = ones((batch_size, 1)).cuda()
 
-        g_optimizer.zero_grad()
-        self.manual_backward(adv_loss)
-        g_optimizer.step()
+            g_loss = self.g_loss_fn(pred, y)
+            adv_loss = g_loss + self.d_loss_fn(fake_label, ones_label)
 
-        self.log_dict({"g_loss": g_loss, "d_loss": d_loss, "adv_loss": adv_loss}, prog_bar = True)
+            g_optimizer.zero_grad()
+            self.manual_backward(adv_loss)
+            g_optimizer.step()
+
+            self.log_dict({"g_loss": g_loss, "adv_loss": adv_loss}, prog_bar = True)

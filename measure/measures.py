@@ -39,3 +39,19 @@ class PointWiseBinaryCrossEntropy(Module):
         loss = y * log(pred) + (1.0 - y) * log(1.0 - pred)
         loss = mean(loss)
         return -loss
+
+class MeanSquareError(Module):
+    def forward(self, pred, y):
+        diff = pred - y
+        diff_square = diff * diff
+        loss = mean(diff_square)
+        return loss
+
+class RootMeanSquareError(Module):
+    def forward(self, pred, y):
+        diff = pred - y
+        diff_square = diff * diff
+        loss = mean(diff_square, 1)
+        loss = sqrt(loss)
+        loss = mean(loss, 1)
+        return loss
