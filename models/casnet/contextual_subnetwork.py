@@ -8,7 +8,7 @@ class ContextualSubnetwork(Module):
         self.network = Sequential(
             MaxPool2d(kernel_size = 2, stride = 2),
             Flatten(),
-            Linear(in_features = 6 * 12 * 1024, out_features = 1024)
+            Linear(in_features = 9 * 12 * 1024, out_features = 1024)
         )
 
     def forward(self, x):
