@@ -41,7 +41,6 @@ def train_cgan(model: LightningModule, name: str, dataset: Dataset, gpus: int = 
         return
 
     callbacks = [
-        EarlyStopping(monitor = "g_loss"),
         ModelCheckpoint(dirpath = "./", filename = f"{name}-checkpoint.model", monitor = "g_loss")
     ]
 
