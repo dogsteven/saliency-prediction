@@ -9,7 +9,7 @@ class NormalizedScanpathSaliency(Module):
         pred_std = sqrt(sum(pred * pred, 1, True))
         pred = pred / pred_std
 
-        loss = sum(pred * y, 1)
+        loss = sum(pred * y / sum(y, 1, True), 1)
         loss = mean(loss)
         return loss
 
