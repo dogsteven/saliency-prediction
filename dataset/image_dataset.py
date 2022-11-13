@@ -1,55 +1,39 @@
 from torch.utils.data import Dataset
 from PIL import Image
-import os
-from typing import Tuple
+from os.path import join
+from .utilities import get_all_images_from_directory
 
-__all__ = ["ImageDataset", "ImageDirectoryDataset"]
-
-def parse(path: str) -> Tuple[str, str]:
-    exts = [".png", ".jpg", ".jpeg"]
-    for ext in exts:
-        if path.endswith(ext):
-            return path[0:-len(ext)], ext[1:]
+__all__ = ["ImageDataset", "ImageDirectoryDataset", "ImageDirectorySourceDataset"]
 
 class ImageDataset(Dataset):
-    def __init__(self, transform, mode: str = "RGB"):
+    def __init__(self, transform, mode):
         self.transform = transform
         self.mode = mode
 
-    def get_image_path(self, index: int) -> str:
+    def get_path(self, index: int) -> str:
         pass
 
     def __getitem__(self, index: int):
-        image_path = self.get_image_path(index)
-        image = self.transform(Image.open(image_path).convert(self.mode))
-        return image
+        return self.transform(Image.open(self.get_path(index)).convert(self.mode))
 
 class ImageDirectoryDataset(ImageDataset):
-    def __init__(self, directory, transform, mode: str = "RGB"):
-        super().__init__(transform, mode)
+    def __init__(self, directory, transform, mode):
         self.directory = directory
+        super().__init__(transform, mode)
 
-    def get_image_subpath(self, index: int) -> str:
+    def get_subpath(self, index: int) -> str:
         pass
 
-    def get_image_path(self, index: int) -> str:
-        return os.path.join(self.directory, self.get_image_subpath(index))
+    def get_path(self, index: int) -> str:
+        return join(self.directory, self.get_subpath(index))
 
-    def generate(self, model, path: str, name: str, transform):
-        directory_path = os.path.join(path, name)
-        try:
-            os.mkdir(directory_path)
-        except:
-            print(f"Directory {name} already exsits")
+class ImageDirectorySourceDataset(ImageDirectoryDataset):
+    def __init__(self, directory, transform, mode):
+        super().__init__(directory, transform, mode)
+        self.subpaths = sorted(get_all_images_from_directory(self.directory))
 
-        for index in range(len(self)):
-            image = self[index].cuda().unsqueeze(0)
-            predicted = model(image).squeeze(0)
-            predicted = predicted.cpu().detach()
-            predicted = transform(predicted)
+    def __len__(self):
+        return len(self.subpaths)
 
-            name, _ = parse(self.get_image_subpath(index))
-            name = f"{name}.png"
-            path = os.path.join(directory_path, name)
-
-            predicted.save(path, "PNG")
+    def get_subpath(self, index: int) -> str:
+        return self.subpaths[index]

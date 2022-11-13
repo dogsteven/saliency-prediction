@@ -1,7 +1,7 @@
 from torch import sum
 from torch.nn import Module, ModuleList
 
-__all__ = ["BatchFlatten", "NormalizeToProbabilitic", "ChainTransform", "ComponentWiseTransform", "ComponentCombineTransform"]
+__all__ = ["BatchFlatten", "NormalizeToProbabilitic", "ChainTransform", "ComponentWiseTransform", "ComponentCombineTransform", "GetComponent"]
 
 class ChainTransform(Module):
     def __init__(self, transforms):
@@ -41,3 +41,11 @@ class NormalizeToProbabilitic(Module):
 
     def forward(self, x):
         return x / (sum(x, 1, True) + self.eps)
+
+class GetComponent(Module):
+    def __init__(self, index: int):
+        super().__init__()
+        self.index = index
+
+    def forward(self, x):
+        return x[self.index]

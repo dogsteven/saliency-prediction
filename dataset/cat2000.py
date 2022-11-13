@@ -1,41 +1,21 @@
-from .saliency_map_dataset import SaliencyMapDirectoryDataset
-from .subdataset import Subdataset
-from typing import Tuple
+from .dataset import ZippedDataset
+from .image_dataset import ImageDirectoryDataset
 
-__all__ = ["CAT2000SaliencyMapDataset"]
+__all__ = ["CAT2000SaliencyDataset"]
 
-class CAT2000SaliencyMapDataset(SaliencyMapDirectoryDataset):
-    categories = ["Action", "Affective", "Art", "BlackWhite", "Cartoon", "Fractal", "Indoor", "Inverted", "Jumbled", "LineDrawing", "LowResolution", "Noisy", "Object", "OutdoorManMade", "OutdoorNatural", "Pattern", "Random", "Satelite", "Sketch", "Social"]
+def CAT2000SaliencyDataset(image_directory, image_transform, ground_truth_directory, ground_truth_transform):
+    class CAT2000ImageDataset(ImageDirectoryDataset):
+        categories = ["Action", "Affective", "Art", "BlackWhite", "Cartoon", "Fractal", "Indoor", "Inverted", "Jumbled", "LineDrawing", "LowResolution", "Noisy", "Object", "OutdoorManMade", "OutdoorNatural", "Pattern", "Random", "Satelite", "Sketch", "Social"]
 
-    def __len__(self):
-        return 2000
+        def __len__(self):
+            return 2000
 
-    def get_image_subpath(self, index: int) -> str:
-        category = CAT2000SaliencyMapDataset.categories[index % 20]
-        item_name = f"{str(2 * (index // 20) + 1).zfill(3)}.jpg"
-        return f"{category}/{item_name}"
+        def get_subpath(self, index: int) -> str:
+            category = CAT2000ImageDataset.categories[index % 20]
+            item_name = f"{str(2 * (index // 20) + 1).zfill(3)}.jpg"
+            return f"{category}/{item_name}"
 
-    def get_ground_truth_subpath(self, index: int) -> str:
-        category = CAT2000SaliencyMapDataset.categories[index % 20]
-        item_name = f"{str(2 * (index // 20) + 1).zfill(3)}.jpg"
-        return f"{category}/{item_name}"
+    image_dataset = CAT2000ImageDataset(image_directory, image_transform, "RGB")
+    ground_truth_dataset = CAT2000ImageDataset(ground_truth_directory, ground_truth_transform, "L")
 
-    def split(self, train_ratio: float = 0.8) -> Tuple[Subdataset, Subdataset]:
-        import random
-
-        train_indices = []
-        val_indices = []
-
-        for i in range(20):
-            x = list(range(100))
-            y = []
-
-            for _ in range(int((1.0 - train_ratio) * 100)):
-                index = random.choice(x)
-                y.append(index)
-                x.remove(index)
-
-            train_indices = train_indices + [index * 20 + i for index in x]
-            val_indices = val_indices + [index * 20 + i for index in y]
-
-        return Subdataset(self, train_indices), Subdataset(self, val_indices)
+    return ZippedDataset(image_dataset, ground_truth_dataset)

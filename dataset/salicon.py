@@ -1,36 +1,37 @@
-import os
-from .saliency_map_dataset import SaliencyMapDirectoryDataset
-from .image_dataset import ImageDirectoryDataset
+from .dataset import ZippedDataset
+from .image_dataset import ImageDirectorySourceDataset
 
-__all__ = ["SALICONSaliencyMapDataset"]
+__all__ = ["SALICONSaliencyDataset"]
 
-def is_image_path(path: str) -> bool:
-    return path.endswith(".png") or path.endswith(".jpg") or path.endswith(".jpeg")
+def SALICONSaliencyDataset(image_directory, image_transform, saliency_map_directory = None, saliency_map_transform = None, fixation_map_directory = None, fixation_map_transform = None):
+    assert not (saliency_map_directory is None and fixation_map_directory is None)
+    assert (saliency_map_directory is None and saliency_map_transform is None) or (saliency_map_directory is not None and saliency_map_transform is not None)
+    assert (fixation_map_directory is None and fixation_map_transform is None) or (fixation_map_directory is not None and fixation_map_transform is not None)
 
-class SALICONSaliencyMapDataset(SaliencyMapDirectoryDataset):
-    def __init__(self, image_directory, ground_truth_directory, image_transform, ground_truth_transform):
-        super().__init__(image_directory, ground_truth_directory, image_transform, ground_truth_transform)
+    image_dataset = ImageDirectorySourceDataset(image_directory, image_transform, "RGB")
 
-        self.image_subpaths = sorted([path for path in os.listdir(self.image_directory) if is_image_path(path)])
-        self.ground_truth_subpaths = sorted([path for path in os.listdir(self.ground_truth_directory) if is_image_path(path)])
+    if saliency_map_directory is not None and fixation_map_directory is not None:
+        saliency_map_dataset = ImageDirectorySourceDataset(saliency_map_directory, saliency_map_transform, "L")
+        fixation_map_dataset = ImageDirectorySourceDataset(fixation_map_directory, fixation_map_transform, "L")
 
-    def __len__(self):
-        return len(self.image_subpaths)
+        return ZippedDataset(
+            image_dataset,
+            ZippedDataset(
+                saliency_map_dataset,
+                fixation_map_dataset
+            )
+        )
+    elif saliency_map_directory is not None:
+        saliency_map_dataset = ImageDirectorySourceDataset(saliency_map_directory, saliency_map_transform, "L")
 
-    def get_image_subpath(self, index: int) -> str:
-        return self.image_subpaths[index]
+        return ZippedDataset(
+            image_dataset,
+            saliency_map_dataset
+        )
+    else:
+        fixation_map_dataset = ImageDirectorySourceDataset(fixation_map_directory, fixation_map_transform, "L")
 
-    def get_ground_truth_subpath(self, index: int) -> str:
-        return self.ground_truth_subpaths[index]
-
-class SALICONTestImageDataset(ImageDirectoryDataset):
-    def __init__(self, directory, transform, mode: str = "RGB"):
-        super().__init__(directory, transform, mode)
-
-        self.image_subpaths = sorted([path for path in os.listdir(self.directory) if is_image_path(path)])
-
-    def __len__(self):
-        return len(self.image_subpaths)
-
-    def get_image_subpath(self, index: int) -> str:
-        return self.image_subpaths[index]
+        return ZippedDataset(
+            image_dataset,
+            fixation_map_dataset
+        )
