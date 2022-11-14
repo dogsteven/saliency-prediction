@@ -1,7 +1,7 @@
 from torch import log, sum, mean, min, sqrt
 from torch.nn import Module
 
-__all__ = ["KLDivergence", "Similarity", "CorrelationCoefficient", "PointWiseBinaryCrossEntropy", "MeanSquareError", "RootMeanSquareError"]
+__all__ = ["NormalizedScanpathSaliency", "KLDivergence", "Similarity", "CorrelationCoefficient", "PointWiseBinaryCrossEntropy", "MeanSquareError", "RootMeanSquareError"]
 
 class NormalizedScanpathSaliency(Module):
     def forward(self, pred, y):
