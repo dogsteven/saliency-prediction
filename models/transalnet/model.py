@@ -38,7 +38,7 @@ class TranSalNet(Module):
             spatial_shape = (9, 12),
             d_model = 768,
             ffn_hidden_features = 512 * 4,
-            n_heads = 8,
+            n_heads = 12,
             n_layers = 2,
             attention_dropout_rate = 0.0,
             ffn_dropout_rate = 0.0,
