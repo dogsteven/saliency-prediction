@@ -3,6 +3,8 @@ from .utilities.convolution_relu import Conv2dReLU
 
 __all__ = ["VGG16Backbone"]
 
+from collections import OrderedDict
+
 class VGG16Backbone(Module):
     def __init__(self):
         super().__init__()
