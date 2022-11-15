@@ -30,6 +30,8 @@ class ImageDirectoryDataset(ImageDataset):
         return join(self.directory, self.get_subpath(index))
 
     def generate(self, model, path, directory, transform):
+        from tdqm import tdqm
+
         output_path = join(path, directory)
         try:
             mkdir(output_path)
@@ -39,7 +41,7 @@ class ImageDirectoryDataset(ImageDataset):
         model.cuda()
 
         with no_grad():
-            for index in range(len(self)):
+            for index in tdqm(range(len(self))):
                 image = self[index].cuda()
                 predicted = model(image.unsqueeze(0)).squeeze(0).detach().cpu()
                 output_image = transform(predicted)
