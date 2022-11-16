@@ -84,14 +84,14 @@ class MultiHeadAttention(Module):
         x = x.reshape(b, n, self.d_model)  # shape (batch, n, d_model)
         return x
 
-    def forward_for_visualization(self, queries, keys, values):
-        queries = self.pack_heads(self.W_q(queries))
-        keys = self.pack_heads(self.W_k(keys))
-        values = self.pack_heads(self.W_v(values))
-
-        output = self.attention.forward_for_visualization(queries, keys, values)
-        output = self.unpack_heads(output)
-        output = self.W(output)
-        output = self.dropout(output)
-
-        return output
+    # def forward_for_visualization(self, queries, keys, values):
+    #     queries = self.pack_heads(self.W_q(queries))
+    #     keys = self.pack_heads(self.W_k(keys))
+    #     values = self.pack_heads(self.W_v(values))
+    #
+    #     output = self.attention.forward_for_visualization(queries, keys, values)
+    #     output = self.unpack_heads(output)
+    #     output = self.W(output)
+    #     output = self.dropout(output)
+    #
+    #     return output
