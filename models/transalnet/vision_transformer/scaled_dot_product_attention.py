@@ -42,7 +42,7 @@ class ScaledDotProductAttention(Module):
         scores = bmm(queries, keys.transpose(1, 2)) / sqrt(d)
         scores = softmax(scores, 2)
 
-        self.visualization_buffer = scores
+        self.visualization_buffer[:] = scores
 
         output = bmm(scores, values)
         output = self.dropout(output)
