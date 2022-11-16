@@ -54,7 +54,7 @@ class TransformerEncoderLayer(Module):
     def forward_for_visualization(self, x):
         h = x  # shape (batch, n, d_model)
         x = self.attention_layer_norm(x)  # shape (batch, n, d_model)
-        x = self.attention.forward_for_visualization(x, x, x)  # shape (batch, n, d_model)
+        x, visualization_result = self.attention.forward_for_visualization(x, x, x)  # shape (batch, n, d_model)
         x = x + h  # shape (batch, n, d_model)
 
         h = x  # shape (batch, n, d_model)
@@ -62,7 +62,7 @@ class TransformerEncoderLayer(Module):
         x = self.ffn.forward_for_visualization(x)  # shape (batch, n, d_model)
         x = x + h  # shape (batch, n, d_model)
 
-        return x
+        return x, visualization_result
 
 
 class TransformerEncoder(Module):
@@ -101,7 +101,9 @@ class TransformerEncoder(Module):
         return x
 
     def forward_for_visualization(self, x):
+        visualization_results = []
         for layer in self.layers:
-            x = layer.forward_for_visualization(x)
+            x, visualization_result = layer.forward_for_visualization(x)
+            visualization_results.append(visualization_result)
         x = self.encoder_layer_norm(x)
-        return x
+        return x, visualization_results
