@@ -14,7 +14,7 @@ class NormalizedScanpathSaliency(Module):
         return loss
 
 class KLDivergence(Module):
-    def __init__(self, eps = 1e-10):
+    def __init__(self, eps = 2.2204e-16):
         super().__init__()
         self.eps = eps
 
@@ -43,6 +43,17 @@ class CorrelationCoefficient(Module):
         cc = cov / (pred_var * y_var)
         cc = mean(cc)
         return cc
+
+class InformationGain(Module):
+    def __init__(self, eps = 2.2204e-16):
+        super().__init__()
+        self.eps = eps
+
+    def forward(self, pred, y):
+        loss = y * log(pred + self.eps) / sum(y, 1, True)
+        loss = sum(loss, 1)
+        loss = mean(loss)
+        return loss
 
 class PointWiseBinaryCrossEntropy(Module):
     def forward(self, pred, y):
