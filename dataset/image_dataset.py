@@ -41,7 +41,7 @@ class ImageDirectoryDataset(ImageDataset):
         model.cuda()
 
         with no_grad():
-            for index in tdqm(range(len(self))):
+            for index in tqdm(range(len(self))):
                 image = self[index].cuda()
                 predicted = model(image.unsqueeze(0)).squeeze(0).detach().cpu()
                 output_image = transform(predicted)
