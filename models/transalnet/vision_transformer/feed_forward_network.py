@@ -27,5 +27,5 @@ class FeedForwardNetwork(Module):
         # --------------------------------------
         return self.network(x)
 
-    # def forward_for_visualization(self, x):
-    #     return self.network(x)
+    def forward_for_visualization(self, x):
+        return self.network(x)

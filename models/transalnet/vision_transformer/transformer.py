@@ -100,8 +100,8 @@ class TransformerEncoder(Module):
         x = self.encoder_layer_norm(x)  # shape (batch, n, d_model)
         return x
 
-    # def forward_for_visualization(self, x):
-    #     for layer in self.layers:
-    #         x = layer.forward_for_visualization(x)
-    #     x = self.encoder_layer_norm(x)
-    #     return x
+    def forward_for_visualization(self, x):
+        for layer in self.layers:
+            x = layer.forward_for_visualization(x)
+        x = self.encoder_layer_norm(x)
+        return x

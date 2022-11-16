@@ -36,9 +36,9 @@ class PatchEmbedding(Module):
         features = self.position_encoding(features)  # shape (batch, h * w, output_dim)
         return features
 
-    # def forward_for_visualization(self, features):
-    #     features = self.projection(features)
-    #     features = features.flatten(2)
-    #     features = features.transpose(1, 2)
-    #     features = self.position_encoding.forward_for_visualization(features)
-    #     return features
+    def forward_for_visualization(self, features):
+        features = self.projection(features)
+        features = features.flatten(2)
+        features = features.transpose(1, 2)
+        features = self.position_encoding.forward_for_visualization(features)
+        return features

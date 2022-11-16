@@ -114,23 +114,23 @@ class TranSalNet(Module):
 
         return x
 
-    # def forward_for_visualization(self, x):
-    #     x1, x2, x3 = self.backbone(x)
-    #
-    #     x3 = self.vit3.forward_for_visualization(x3)
-    #     x3 = self.block1(x3)
-    #
-    #     x2a = self.vit2.forward_for_visualization(x2)
-    #     x2 = x3 * x2a
-    #     x2 = self.block2(x2)
-    #
-    #     x1a = self.vit1.forward_for_visualization(x1)
-    #     x1 = x2 * x1a
-    #     x1 = self.block3(x1)
-    #
-    #     x = self.block4(x1)
-    #     x = self.block5(x)
-    #     x = self.block6(x)
-    #     x = self.block7(x)
-    #
-    #     return x
+    def forward_for_visualization(self, x):
+        x1, x2, x3 = self.backbone(x)
+
+        x3 = self.vit3.forward_for_visualization(x3)
+        x3 = self.block1(x3)
+
+        x2a = self.vit2.forward_for_visualization(x2)
+        x2 = x3 * x2a
+        x2 = self.block2(x2)
+
+        x1a = self.vit1.forward_for_visualization(x1)
+        x1 = x2 * x1a
+        x1 = self.block3(x1)
+
+        x = self.block4(x1)
+        x = self.block5(x)
+        x = self.block6(x)
+        x = self.block7(x)
+
+        return x

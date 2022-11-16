@@ -11,5 +11,5 @@ class PositionalEncoding(Module):
     def forward(self, x):
         return x + self.position
 
-    # def forward_for_visualization(self, x):
-    #     return x + self.position
+    def forward_for_visualization(self, x):
+        return x + self.position
