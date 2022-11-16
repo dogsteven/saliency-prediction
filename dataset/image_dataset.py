@@ -30,7 +30,7 @@ class ImageDirectoryDataset(ImageDataset):
         return join(self.directory, self.get_subpath(index))
 
     def generate(self, model, path, directory, transform):
-        from tdqm import tdqm
+        from tqdm import tqdm
 
         output_path = join(path, directory)
         try:

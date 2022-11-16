@@ -31,7 +31,7 @@ class ZippedDataset(Dataset):
         return self.first_dataset[index], self.second_dataset[index]
 
     def test(self, model: Module, start: int, end: int, gpu = False):
-        from tdqm import tdqm
+        from tqdm import tqdm
 
         if not isinstance(self.first_dataset, ImageDataset) or not isinstance(self.second_dataset, ImageDataset):
             return
@@ -43,7 +43,7 @@ class ZippedDataset(Dataset):
 
         _, axs = pyplot.subplots(nrows = end - start, ncols = 3, figsize = (30, 10 * (end - start)))
 
-        for index in tdqm(range(start, end)):
+        for index in tqdm(range(start, end)):
             image = Image.open(self.first_dataset.get_path(index)).convert("RGB")
             ground_truth = Image.open(self.second_dataset.get_path(index)).convert("L")
 
