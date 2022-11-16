@@ -4,11 +4,11 @@ __all__ = ["FeedForwardNetwork"]
 
 class FeedForwardNetwork(Module):
     def __init__(
-            self,
-            in_features: int,
-            hidden_features: int,
-            out_features: int,
-            dropout_rate: float = 0.0
+        self,
+        in_features: int,
+        hidden_features: int,
+        out_features: int,
+        dropout_rate: float = 0.0
     ):
         super().__init__()
 
@@ -25,4 +25,7 @@ class FeedForwardNetwork(Module):
         # --------------------------------------
         # shape of output: (batch, n, out_features)
         # --------------------------------------
+        return self.network(x)
+
+    def forward_for_visualization(self, x):
         return self.network(x)

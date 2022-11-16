@@ -6,13 +6,13 @@ __all__ = ["MultiHeadAttention"]
 
 class MultiHeadAttention(Module):
     def __init__(
-            self,
-            d_qkv: Tuple[int, int, int],
-            n_heads: int,
-            d_model: int,
-            d_output: int,
-            dropout_rate: float = 0.0,
-            bias: bool = False
+        self,
+        d_qkv: Tuple[int, int, int],
+        n_heads: int,
+        d_model: int,
+        d_output: int,
+        dropout_rate: float = 0.0,
+        bias: bool = False
     ):
         super().__init__()
 
@@ -83,3 +83,15 @@ class MultiHeadAttention(Module):
         x = x.transpose(1, 2)  # shape (batch, n, n_heads, d_proj)
         x = x.reshape(b, n, self.d_model)  # shape (batch, n, d_model)
         return x
+
+    def forward_for_visualization(self, queries, keys, values):
+        queries = self.pack_heads(self.W_q(queries))
+        keys = self.pack_heads(self.W_k(keys))
+        values = self.pack_heads(self.W_v(values))
+
+        output = self.attention.forward_for_visualization(queries, keys, values)
+        output = self.unpack_heads(output)
+        output = self.W(output)
+        output = self.dropout(output)
+
+        return output

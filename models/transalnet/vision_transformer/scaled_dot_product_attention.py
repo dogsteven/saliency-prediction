@@ -8,6 +8,7 @@ class ScaledDotProductAttention(Module):
     def __init__(self, dropout_rate: float):
         super().__init__()
         self.dropout = Dropout(dropout_rate)
+        self.visualization_buffer = None
 
     def forward(self, queries, keys, values):
         # shape of queries: (batch, n_q, d)
@@ -25,12 +26,25 @@ class ScaledDotProductAttention(Module):
         # d: input dimension
         # d_v: output dimension
 
-        b, n_q, d = queries.shape
+        _, _, d = queries.shape
 
         scores = bmm(queries, keys.transpose(1, 2)) / sqrt(d)  # shape (batch, n_q, n_kv)
         scores = softmax(scores, 2)  # shape (batch, n_q, n_kv)
 
         output = bmm(scores, values)  # shape (batch, n_q, d_v)
         output = self.dropout(output)  # shape (batch, n_q, d_v)
+
+        return output
+
+    def forward_for_visualization(self, queries, keys, values):
+        _, _, d = queries.shape
+
+        scores = bmm(queries, keys.transpose(1, 2)) / sqrt(d)
+        scores = softmax(scores, 2)
+
+        self.visualization_buffer = scores
+
+        output = bmm(scores, values)
+        output = self.dropout(output)
 
         return output

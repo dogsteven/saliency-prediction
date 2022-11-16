@@ -6,10 +6,10 @@ __all__ = ["PatchEmbedding"]
 
 class PatchEmbedding(Module):
     def __init__(
-            self,
-            in_channels: int,
-            output_dim: int,
-            spatial_shape: Tuple[int, int]
+        self,
+        in_channels: int,
+        output_dim: int,
+        spatial_shape: Tuple[int, int]
     ):
         super().__init__()
 
@@ -34,4 +34,11 @@ class PatchEmbedding(Module):
         features = features.flatten(2)  # shape (batch, output_dim, h * w)
         features = features.transpose(1, 2)  # shape (batch, h * w, output_dim)
         features = self.position_encoding(features)  # shape (batch, h * w, output_dim)
+        return features
+
+    def forward_for_visualization(self, features):
+        features = self.projection(features)
+        features = features.flatten(2)
+        features = features.transpose(1, 2)
+        features = self.position_encoding.forward_for_visualization(features)
         return features

@@ -49,3 +49,12 @@ class VisionTransformer(Module):
         features = features.reshape(b, -1, h, w)
 
         return features
+
+    def forward_for_visualization(self, features):
+        b, _, h, w = features.shape
+        features = self.patch_embedding.forward_for_visualization(features)
+        features = self.transformer_encoder.forward_for_visualization(features)
+        features = features.transpose(1, 2)
+        features = features.reshape(b, -1, h, w)
+
+        return features
