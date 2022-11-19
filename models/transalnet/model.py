@@ -135,4 +135,4 @@ class TranSalNet(Module):
 
         visualization_results = [visualization_result1, visualization_result2, visualization_result3]
 
-        return visualization_results
+        return x, visualization_results
