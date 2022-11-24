@@ -1,6 +1,5 @@
 from torch import cat
 from torch.nn import Module
-from torchvision.transforms.functional import resize
 from ..utilities.convolution_relu import Conv2dReLU
 from ..utilities.global_average_pooling import GlobalAveragePooling
 
@@ -28,4 +27,4 @@ class ASPP(Module):
         r = cat([r1, r2, r3, r4, r5], dim = 1)
         r = self.combine(r)
 
-        return
+        return r

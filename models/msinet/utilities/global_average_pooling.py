@@ -1,4 +1,5 @@
 from torch.nn import Module
+from torchvision.transforms.functional import resize
 from .convolution_relu import Conv2dReLU
 
 __all__ = ["GlobalAveragePooling"]
