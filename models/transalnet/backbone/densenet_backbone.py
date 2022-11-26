@@ -51,7 +51,7 @@ class DenseNet161Backbone(Module):
     def load_pretrained(self):
         from torchvision.models import densenet161
 
-        features = densenet161().features
+        features = densenet161(pretrained = True).features
         self.conv0.load_state_dict(features.conv0.state_dict())
         self.norm0.load_state_dict(features.norm0.state_dict())
         self.denseblock1.load_pretrained(features.denseblock1)
