@@ -1,4 +1,4 @@
-from torch.nn import Module, UpsamplingBilinear2d
+from torch.nn import Module, UpsamplingBilinear2d, Conv2d
 from ..utilities.convolution_relu import Conv2dReLU
 
 __all__ = ["Decoder"]
@@ -15,7 +15,7 @@ class Decoder(Module):
         self.block3_upsampling = UpsamplingBilinear2d(scale_factor = 2.0)
         self.block3_conv = Conv2dReLU(in_channels = 64, out_channels = 32, kernel_size = 3, stride = 1, padding = 1)
 
-        self.block4_conv = Conv2dReLU(in_channels = 32, out_channels = 1, kernel_size = 3, stride = 1, padding = 1)
+        self.block4_conv = Conv2d(in_channels = 32, out_channels = 1, kernel_size = 3, stride = 1, padding = 1)
 
     def forward(self, x):
         x = self.block1_upsampling(x)

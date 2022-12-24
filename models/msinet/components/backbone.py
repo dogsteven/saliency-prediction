@@ -24,11 +24,11 @@ class VGG16Backbone(Module):
         self.block4_conv2 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 1)
         self.block4_conv3 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 1)
         self.block4_padding = ZeroPad2d((0, 1, 0, 1))
-        self.block4_pooling = MaxPool2d(kernel_size = 2, stride=1)
+        self.block4_pooling = MaxPool2d(kernel_size = 2, stride = 1)
 
-        self.block5_conv1 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 1)
-        self.block5_conv2 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 1)
-        self.block5_conv3 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 1)
+        self.block5_conv1 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 2, dilation = 2)
+        self.block5_conv2 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 2, dilation = 2)
+        self.block5_conv3 = Conv2dReLU(in_channels = 512, out_channels = 512, kernel_size = 3, stride = 1, padding = 2, dilation = 2)
         self.block5_padding = ZeroPad2d((0, 1, 0, 1))
         self.block5_pooling = MaxPool2d(kernel_size = 2, stride = 1)
 
