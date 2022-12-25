@@ -64,12 +64,12 @@ class VGG16Backbone(Module):
 
         r3 = x
 
-        return cat([r1, r2, r3], dim=1)
+        return cat([r1, r2, r3], dim = 1)
 
     def load_pretrained(self):
         from torchvision.models import vgg16
 
-        pretrained = vgg16()
+        pretrained = vgg16(pretrained = True)
 
         mapping = {
             "block1_conv1": "0",
